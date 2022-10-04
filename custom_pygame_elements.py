@@ -76,7 +76,7 @@ class Text(pygame.sprite.Sprite):
     """ 
     klasse for å enkelt lage og vise tekst i pygame. Arver pygame.sprite.Sprite klasse slik at vi kan jobbe med klassen som sprite
     """
-    def __init__(self, sprite_group, text: str, pos, alignments=False, color=(255,255,255), font_family="comicsans", bold=False, italic=False, font_size=20): 
+    def __init__(self, sprite_group: pygame.sprite.Group, text: str, pos: tuple[float], alignments=False, color: tuple[float]=(255,255,255), font_family="comicsans", bold=False, italic=False, font_size=20): 
         super().__init__(sprite_group) # init sprite class and adds sprite to sprite group 
         self.text = text # tekst som skal vises
         self.color = color # tekst farge
