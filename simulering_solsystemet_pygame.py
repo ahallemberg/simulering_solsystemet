@@ -3,7 +3,8 @@ import pygame # importerer bibliotek for å bruke pygame
 import datetime # importerer bibliotek for å bruke datoer i python
 from dateutil.relativedelta import relativedelta # bibliotek for å kunne manipulere datetime, som f.eks å legge til en måned til en dato
 from custom_pygame_elements import Image, Button, Text # importerer modul med klassene Image, Button og Text for å enkelt lage og vise elementer i pygame
-from storage import Storage # importerer modul med klassen Storage for å lagre simuleringstilstand slik at man kan gjenoppta en simulering 
+from storage import Storage # importerer modul med klassen Storage for å lagre simuleringstilstand slik at man kan gjenoppta en simulering
+from __future__ import annotations
 import os
 os.chdir(os.path.dirname(os.path.abspath(__file__))) # set cwd
 
@@ -57,7 +58,7 @@ class Space_object(pygame.sprite.Sprite):
         self.rect.x = self.x * CONVERT  # gjør om fra virkelig x koordinat til posisjonen langs x retning i pygame 
         self.rect.y = -self.y * CONVERT # gjør om fra virkelig y koordinat til posisjonen langs y retning i pygame. Siden at jo større y koordinat i pygame betyr lengre ned på skjermen (altså motsatt av et vanligkoordinatsystem), må vi ta den negative y-koordinaten for å få riktig plassering på skjermen.
            
-    def update_aks(self, space_objects): # metode for å oppdaterer akselerasjonsvektoren til objektet
+    def update_aks(self, space_objects: list[Space_object]) -> None: # metode for å oppdaterer akselerasjonsvektoren til objektet
         self.a_x = 0 # nullstiller akselerasjonen
         self.a_y = 0 # nullstiller akselerasjonen 
         for space_object in space_objects: # looper gjennom alle romobjekter
@@ -68,7 +69,7 @@ class Space_object(pygame.sprite.Sprite):
                 self.a_x += a_x # legger til akselerasjon i x retning 
                 self.a_y += a_y # legger til akselerasjon i y retning
                   
-    def update_pos(self, dt, zoom, half_w, half_h): # metode for å oppdaterer posisjonen til objektet
+    def update_pos(self, dt: float, zoom, half_w, half_h): # metode for å oppdaterer posisjonen til objektet
         self.v_x += self.a_x*dt # oppdaterer fartsvektoren ut fra akselerasjon og tidsendring
         self.v_y += self.a_y*dt  # oppdaterer fartsvektorenut fra akselerasjon og tidsendring
         self.x += self.v_x*dt # oppdaterer x koordinat ut fra fartsvektor og tidsendring
@@ -206,7 +207,7 @@ def init_camera_group(): # funksjon som initialiserer kamera gruppen med alle ro
     Space_object(camera_group, "Neptun", "neptune.jpeg", 12, 102.409e24, 4.431790029686977e12, -6.114486878028781e11, 7.066237951457524e2, 5.417076605926207e3)
     return camera_group  # returnerer kamera gruppe 
     
-def update_display(width, height):# funksjon for å oppdatere størrelsen på skjermen
+def update_display(width: int, height: int) -> tuple[int, int]:# funksjon for å oppdatere størrelsen på skjermen
     if width < 800: # hvis with er mindre enn 800
         width = 800 # sett width til 800
     if height < 600: # hvis height er mindre enn 600
@@ -216,7 +217,7 @@ def update_display(width, height):# funksjon for å oppdatere størrelsen på sk
     SCREEN = pygame.display.set_mode((width, height),pygame.RESIZABLE) # oppdaterer SCREEN til ny størrelse
     return width, height # returnerer width og height 
 
-def welcome_screen(): # funksjon som viser welcome screen
+def welcome_screen() -> None: # funksjon som viser welcome screen
     run = True # variabel for å avgjøre om screen loop skal fortsette (hvis den blir satt til False slutter denne skjermen å oppdateres)
     welcome_screen_group = pygame.sprite.Group() # sprite gruppe for alle elementer i welcome screen
     
@@ -242,7 +243,7 @@ def welcome_screen(): # funksjon som viser welcome screen
     background_image = pygame.image.load("background.jpeg").convert_alpha() # laster inn bakgrunnsbilde som vises
     background_image = pygame.transform.scale(background_image, pygame.display.get_surface().get_size()) # scaler til størrelsen av skjermen
 
-    def slider_change(index, sprite_group, text, img, right_button, left_button): # funksjon som oppdater hvilken slide som vises til skjermen
+    def slider_change(index: int, sprite_group: pygame.sprite.Group, text: Text, img: Image, right_button: Button, left_button: Button) -> tuple[Text, Image]: # funksjon som oppdater hvilken slide som vises til skjermen
         sprite_group.remove(text) # fjerner text fra sprite gruppe 
         sprite_group.remove(img) # fjerner bilde fra sprite gruppe
         alignments = ["centerx", "centery"] # posisjonsjusteringer for bilde og tekst 
@@ -340,7 +341,7 @@ def welcome_screen(): # funksjon som viser welcome screen
         pygame.display.update() # oppdaterer display 
    
 
-def choose_date_screen(prev_screen, selected_date): # funksjon som viser choos_date_screen
+def choose_date_screen(prev_screen: str, selected_date: datetime.date) -> None: # funksjon som viser choos_date_screen
     run = True # variabel for å avgjøre om screen loop skal fortsette (hvis den blir satt til False slutter denne skjermen å oppdateres)
     choose_date_screen_group = pygame.sprite.Group() # sprite gruppe for alle elementer i choose_date_screen
 
@@ -419,7 +420,7 @@ def choose_date_screen(prev_screen, selected_date): # funksjon som viser choos_d
         pygame.display.update() # oppdaterer display
 
 
-def init_simulation(start_simulation_date): # funksjon for å initialisere simuleringen til gitt simuleringsdato ut fra data hentet fra 1 januar 2022
+def init_simulation(start_simulation_date: datetime.date): # funksjon for å initialisere simuleringen til gitt simuleringsdato ut fra data hentet fra 1 januar 2022
     camera_group = init_camera_group() # initialiserer og returnerer camera_group med romobjekter
     storage.clear() # fjerner all data fra den forrige simuleringen
     
@@ -448,7 +449,7 @@ def init_simulation(start_simulation_date): # funksjon for å initialisere simul
     simulation_screen(camera_group,simulation_time) # viser simulation_screen slik at simuleringen vises når current_date er lik start_simulation_date slik at simuleringen vises fra den datoen bruker har oppgitt 
 
 
-def simulation_screen(camera_group, simulation_time): # funksjon for å vise simulering 
+def simulation_screen(camera_group: CameraGroup, simulation_time: int): # funksjon for å vise simulering 
     run = True # variabel for å avgjøre om screen loop skal fortsette (hvis den blir satt til False slutter denne skjermen å oppdateres)
     current_date = default_date + datetime.timedelta(seconds=simulation_time) # dato vi er på i simuleringen. 1 jan. 2022 + simuleringstiden
     simulation_paused = False # boolean for å avgjøre om simulering er pauset
@@ -478,7 +479,7 @@ def simulation_screen(camera_group, simulation_time): # funksjon for å vise sim
     objectinfo6_text = Text(objectinfo_group, "", (5, -30), font_size=15, alignments=["endy"]) # lager tekst for å vise akselerasjonsvektoren til romobjektet kamera følger
     objectinfo7_text = Text(objectinfo_group, "", (5, -5), font_size=15, alignments=["endy"]) # lager tekst for å vise baneakselerasjonen til romobjektet kamera følger
     
-    def seconds_to_days_and_seconds(seconds): # funkjson som gjør om fra sekunder til string med antall dager og sekunder
+    def seconds_to_days_and_seconds(seconds: float): # funkjson som gjør om fra sekunder til string med antall dager og sekunder
         days_and_seconds = "" # string for antall dager og sekunder
         
         if seconds < 0: # hvis vi har negativt sekunder
@@ -495,7 +496,7 @@ def simulation_screen(camera_group, simulation_time): # funksjon for å vise sim
             days_and_seconds += str(seconds%86400) + " sekunder" # legger til string for sekunder
         return days_and_seconds # returnerer string med dager og sekunder
     
-    def update_info_text(time, date): # funksjon for å oppdatere tekst med informasjon om simuleringen
+    def update_info_text(time: float, date: datetime.date): # funksjon for å oppdatere tekst med informasjon om simuleringen
         if CLOCK.get_fps() < 30: # hvis FPS er mindre enn 30, vis tekst for kalkulert tidssteg per sekund, da tidssteg ikke kalkulerer ut fra FPS siden den er for lav     
             info1 = f"Tidsendring per sekund: {seconds_to_days_and_seconds(int(camera_group.dt*CLOCK.get_fps()))}"
         else: # FPS er større enn 20, hvis tekst med gjennomsnittlig tidssteg per sekund 
@@ -504,7 +505,7 @@ def simulation_screen(camera_group, simulation_time): # funksjon for å vise sim
         info2_text.update_text(f"Zoom: {int(camera_group.zoom_scale*100)}%") # oppdatterer tekst for zoom 
         info3_text.update_text(f"Dato: {date}") # oppdaterer tekst for dato i simulering
         
-    def update_object_info_text(space_object): # funksjon for å oppdatere tekst med informasjon om romobjektet kamera følger
+    def update_object_info_text(space_object: Space_object): # funksjon for å oppdatere tekst med informasjon om romobjektet kamera følger
         objectinfo1_text.update_text(f"Kamera følger: {space_object.name}") # oppdaterer tekst med hvilket romobjekt kamera følger
         objectinfo2_text.update_text(f"Masse: {space_object.mass} kg") # oppdaterer tekst med massen av romobjektet kamera følger
         objectinfo3_text.update_text(f"Posisjon: ({int(space_object.x)}, {int(space_object.y)})") # oppdaterer tekst med posisjonen til romobjektet kamera følger
@@ -513,7 +514,7 @@ def simulation_screen(camera_group, simulation_time): # funksjon for å vise sim
         objectinfo6_text.update_text(f"Akselerasjonsvektor: ({round(space_object.a_x, 7)}, {round(space_object.a_y, 7)})") # oppdaterer tekst med akselerasjonsvektoren til romobjektet kamera følger
         objectinfo7_text.update_text(f"Baneakselerasjon: {round((space_object.a_x**2 + space_object.a_y**2)**0.5, 5)} m/s^2") # oppdaterer tekst med baneakselerasjonen til romobjektet kamera følger
 
-    def update_play_pause_button(simulation_paused): # funksjon for å oppdatere play_pause_button når den blir klikket 
+    def update_play_pause_button(simulation_paused: bool): # funksjon for å oppdatere play_pause_button når den blir klikket 
         if simulation_paused == False: # hvis simulering ikke er pauset
             play_pause_button.update_image("play.png") # oppdaterer bilde som vises som knapp
             return True # setter simulering på pause
@@ -522,25 +523,25 @@ def simulation_screen(camera_group, simulation_time): # funksjon for å vise sim
             play_pause_button.update_image("pause.png") # oppdaterer bilde som vises som knapp
             return False # starter simulering igjen
         
-    def reset_camera(): # funksjon for å nullstille kamera 
+    def reset_camera() -> None: # funksjon for å nullstille kamera 
         camera_group.zoom_scale = 1 # nullstill zoom
         camera_group.offset = pygame.math.Vector2(0,0) # nullstill kamera offset
         camera_group.target = None # sett kamera target til ingen
         camera_group.update_image_sizes() # oppdater bilde størrelse til romobjektene
         
-    def reset_simulation(): # funksjon for å nullstille simulering
+    def reset_simulation() -> None: # funksjon for å nullstille simulering
         storage.clear() # sletter all lagret data om simulering
         init_simulation(datetime.date.today()) # restart simulering til datoen når programmet kjøres
         
-    def go_to_welcome_screen(): 
+    def go_to_welcome_screen() -> None: 
         save_simulation() # lagre simuleringstilstand slik at simulering kan gjenopptas 
         welcome_screen() # bytt til welcome_screen
      
-    def go_to_choose_date_screen(date): 
+    def go_to_choose_date_screen(date: datetime.date) -> None: 
         save_simulation() # lagre simuleringstilstand slik at simulering kan gjenopptas 
         choose_date_screen("game_screen", date)
             
-    def save_simulation(): # funksjon for å lagre simuleringsstatus til json fil 
+    def save_simulation() -> None: # funksjon for å lagre simuleringsstatus til json fil 
         storage.update(camera_group.sprites(), simulation_time, camera_group.dt_per_s, camera_group.zoom_scale, camera_group.offset) # lagrer data til storage før simulering avsluttes slik at simulering kan gjenopptas på nytt
             
     while run: # pygame screen loop for simulation_screen
@@ -633,7 +634,7 @@ def simulation_screen(camera_group, simulation_time): # funksjon for å vise sim
         
         pygame.display.update() # oppdaterer display  
      
-def quit_game(): # funksjon for å avslutte hele simuleringen
+def quit_game() -> None: # funksjon for å avslutte hele simuleringen
     pygame.quit() # avslutter pygame
     sys.exit() # exits program 
 
