@@ -58,7 +58,11 @@ class Space_object(pygame.sprite.Sprite):
         self.rect.x = self.x * CONVERT  # gjør om fra virkelig x koordinat til posisjonen langs x retning i pygame 
         self.rect.y = -self.y * CONVERT # gjør om fra virkelig y koordinat til posisjonen langs y retning i pygame. Siden at jo større y koordinat i pygame betyr lengre ned på skjermen (altså motsatt av et vanligkoordinatsystem), må vi ta den negative y-koordinaten for å få riktig plassering på skjermen.
            
-    def update_aks(self, space_objects: list[Space_object]) -> None: # metode for å oppdaterer akselerasjonsvektoren til objektet
+    def update_aks(self, space_objects: list[Space_object]) -> None: 
+        """ 
+        metode for å oppdaterer akselerasjonsvektoren til objektet
+
+        """
         self.a_x = 0 # nullstiller akselerasjonen
         self.a_y = 0 # nullstiller akselerasjonen 
         for space_object in space_objects: # looper gjennom alle romobjekter
@@ -88,7 +92,10 @@ class Space_object(pygame.sprite.Sprite):
         self.update_rect(zoom, half_w, half_h) # oppdaterer rect ut fra zoom level 
         
             
-class CameraGroup(pygame.sprite.Group): # Klasse som for å manipulere kameraet. Arver fra sprite gruppe, og inneholder alle romobjekter (space_object). 
+class CameraGroup(pygame.sprite.Group): 
+    """
+    Klasse som for å manipulere kameraet. Arver fra sprite gruppe, og inneholder alle romobjekter (space_object)
+    """
     def __init__(self): # initialiserer klasse
         super().__init__() # initialiserer sprite group klasse slik at CameraGroup fungerer som sprite gruppe 
         self.display_surface = pygame.display.get_surface() # overflate (skjerm) som CameraGroup tegner på 
@@ -101,14 +108,20 @@ class CameraGroup(pygame.sprite.Group): # Klasse som for å manipulere kameraet.
         self.dt_per_s = 86400 # tidssteg per sekund i simuleringen 
         self.dt = 0 # tidssteg. Blir kalkulert ut fra dt_per_s og FPS slik at tidssteg per sekund blir lik uavhengig av FPS 
         
-    def update_display_suface(self): # metode for å oppdatere display når størrelsen på skjermen blir endret
+    def update_display_suface(self): 
+        """ 
+        metode for å oppdatere display når størrelsen på skjermen blir endret
+        """
         self.display_surface = pygame.display.get_surface() # overflate (skjerm) som CameraGroup tegner på 
         self.half_w = self.display_surface.get_size()[0] // 2 # halve bredden av skjermen 
         self.half_h = self.display_surface.get_size()[1] // 2 # halve høyden av skjermen 
         for sprite in self.sprites(): # looper igjennom alle romobjekter og oppdaterer rect slik at den blir plassert riktig i skjermen
             sprite.update_rect(self.zoom_scale, self.half_w, self.half_h)
         
-    def init_state(self): # metode for å initialsierer tilstand ut fra lagret data slik at en simulering kan gjenopptas   
+    def init_state(self): 
+        """ 
+        metode for å initialsierer tilstand ut fra lagret data slik at en simulering kan gjenopptas   
+        """
         storage_data = storage.get() # henter data som er lagret i fil 
         for sprite in self.sprites(): # looper igjennom alle romobjekter (altså alle sprites i gruppa)
             for space_object_json in storage_data["space_objects"]: # looper gjennom lagret data om romobjekter
@@ -123,23 +136,38 @@ class CameraGroup(pygame.sprite.Group): # Klasse som for å manipulere kameraet.
         self.offset = pygame.math.Vector2(storage_data["camera_offset"][0],storage_data["camera_offset"][1]) # oppdaterer offset til kameraet slik at kamera er plassert riktig ut fra kameras lagret posisjon
         self.dt_per_s = storage_data["dt_per_s"] # oppdaterer tidsendring per sekundt til lagret tidsendring per sekund
         
-    def update_aks(self): # kalles metoden update_aks for alle romobjekter (space_object), noe som kalkulerer akselerasjonen for alle romobjektene
+    def update_aks(self): 
+        """ 
+        kalles metoden update_aks for alle romobjekter (space_object), noe som kalkulerer akselerasjonen for alle romobjektene
+        """
         for sprite in self.sprites(): # looper gjennom alle sprites
             sprite.update_aks(self.sprites()) # kaller metoden update_aks
             
-    def update_pos(self): # kaller metoden update_pos for alle romobjekter (space_object)
+    def update_pos(self): 
+        """
+        kaller metoden update_pos for alle romobjekter (space_object)
+        """
         for sprite in self.sprites(): # looper gjennom alle sprites 
             sprite.update_pos(self.dt, self.zoom_scale, self.half_w, self.half_h) # kaller metoden update_pos
             
-    def update_image_sizes(self): # metode for å oppdaterer størrelsen på bilene til alle remobjektene i gruppa. Brukes for å gjøre bildene større eller mindre avhengig av zoom_scale 
+    def update_image_sizes(self): 
+        """
+        metode for å oppdaterer størrelsen på bilene til alle remobjektene i gruppa. Brukes for å gjøre bildene større eller mindre avhengig av zoom_scale 
+        """
         for sprite in self.sprites(): # looper gjennom alle spriter (romobjekter)
             sprite.update_image_size(self.zoom_scale, self.half_w, self.half_h) # kaller metoden update_image_size for alle spriter i klassen
             
-    def center_target_camera(self): # metode for å gjøre at kameraet forkuserer på et objekt
+    def center_target_camera(self): 
+        """
+        metode for å gjøre at kameraet forkuserer på et objekt
+        """
         self.offset.x = self.target.rect.centerx - self.half_w # setter offset i x retning til target x koordinater - halve bredden av skjermen. Dette vil gjøre at target blir i midten av skjermen når offset blir trekt fra alle objekter
         self.offset.y = self.target.rect.centery - self.half_h # setter offset i y retning til target y koordinater - halve høyden av skjermen. Dette vil gjøre at target blir i midten av skjermen når offset blir trekt fra alle objekter
         
-    def keyboard_control(self): # metode for å kontrollere kameraet og tidssteg med taster
+    def keyboard_control(self): 
+        """
+        metode for å kontrollere kameraet og tidssteg med taster
+        """
         keys = pygame.key.get_pressed() # metode som returnerer alle kanpper som er presset
         ### kamera bevegelse
         if keys[pygame.K_a] and self.target == None: # hvis a er trykket, trekk i fra keyboard_speed fra offset i x retning slik at kameraet beveger seg mot venstre
@@ -165,7 +193,10 @@ class CameraGroup(pygame.sprite.Group): # Klasse som for å manipulere kameraet.
         if keys[pygame.K_DOWN]: # hvis ned tast er trykket
             self.dt_per_s -= 1000 + self.dt_per_s*0.001 # trekker fra 1000 og en tudendel av dt_per_s slik at tidsendring per sekund synker eksponentielt 
             
-    def check_mouse_click(self, mx, my): # metode som sjekker om et romobjekt er klikket 
+    def check_mouse_click(self, mx, my): 
+        """ 
+        metode som sjekker om et romobjekt er klikket 
+        """
         for sprite in self.sprites(): # loops gjennom alle spriter (romobjekter) i gruppa
             rect = sprite.rect # setter rect lik rect til sprite
             if rect.collidepoint(mx+self.offset.x, my+self.offset.y): # ser om mus posisjonen + offset har samme posisjon som en av elementene, fordi da trykker musa på en av objektene
