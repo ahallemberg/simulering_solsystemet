@@ -1,5 +1,5 @@
 # Simulering av bevegelsen til legemer i solsystemet 
-Dette prosjektet er en simulering av solsystemet visualisert med Pygame. Simuleringen tar hensyn til gravitasjonskreftene mellom himmellegemer og viser deres bevegelse over tid.
+Dette prosjektet er en simulering av solsystemet visualisert med Pygame. Simuleringen tar hensyn til gravitasjonskreftene mellom himmellegemer i samme plan, og viser deres bevegelse over tid.
 
 ## Dependencies
 pygame
