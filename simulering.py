@@ -583,11 +583,11 @@ def simulation_screen(camera_group: CameraGroup, simulation_time: int):
         funksjon for å oppdatere play_pause_button når den blir klikket 
         """
         if simulation_paused == False: # hvis simulering ikke er pauset
-            play_pause_button.update_image("play.png") # oppdaterer bilde som vises som knapp
+            play_pause_button.update_image("./assets/play.png") # oppdaterer bilde som vises som knapp
             return True # setter simulering på pause
         
         else: # simulering er pauset
-            play_pause_button.update_image("pause.png") # oppdaterer bilde som vises som knapp
+            play_pause_button.update_image("./assets/pause.png") # oppdaterer bilde som vises som knapp
             return False # starter simulering igjen
         
     def reset_camera() -> None: 
