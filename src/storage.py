@@ -4,8 +4,8 @@ class Storage:
     """
     klasse for å lagre data til json fil for å huske simulering state, og å hente ut data igjen
     """
-    def __init__(self) -> None: # constructor
-        self.file_path = "storage_data.json" # file path for stored data 
+    def __init__(self, path) -> None: # constructor
+        self.file_path =  path # file path for stored data 
        
     def get(self) -> str|None:  
         """ 

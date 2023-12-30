@@ -3,16 +3,17 @@ import sys # importerer modul for å manipulere kjøretidsmiljøet
 import pygame # importerer bibliotek for å bruke pygame
 import datetime # importerer bibliotek for å bruke datoer i python
 from dateutil.relativedelta import relativedelta # bibliotek for å kunne manipulere datetime, som f.eks å legge til en måned til en dato
-from custom_pygame_elements import Image, Button, Text # importerer modul med klassene Image, Button og Text for å enkelt lage og vise elementer i pygame
-from storage import Storage # importerer modul med klassen Storage for å lagre simuleringstilstand slik at man kan gjenoppta en simulering
+from src.custom_pygame_elements import Image, Button, Text # importerer modul med klassene Image, Button og Text for å enkelt lage og vise elementer i pygame
+from src.storage import Storage # importerer modul med klassen Storage for å lagre simuleringstilstand slik at man kan gjenoppta en simulering
 import os
+
 os.chdir(os.path.dirname(os.path.abspath(__file__))) # set cwd
 
 pygame.init() # initaliserer pygame moduler
 
 SCREEN = pygame.display.set_mode((800,700), pygame.RESIZABLE) # initaliserer skjermen. Start 800x700. Er resizable.
 pygame.display.set_caption("Simulering solsystemet") # legger til undertittel 
-appIcon = pygame.image.load("./app_icon.png") # laster inn app icon
+appIcon = pygame.image.load("./assets/app_icon.png") # laster inn app icon
 pygame.display.set_icon(appIcon) # legger til app icon
 
 FPS = 60 # max FPS for simulering 
@@ -23,7 +24,7 @@ CONVERT = 1/4182695000 # et veldig lite tall for å gå fra virkelig avstand til
 
 GRAV_CONST = 6.67430e-11 # gravitasjonskonstanten 
 
-storage = Storage() # storage objekt for å lagre og hente lagret simuleringsstilstand 
+storage = Storage("./data/storage_data.json") # storage objekt for å lagre og hente lagret simuleringsstilstand 
 
 def aks(x: float, y: float, mass: float) -> tuple[float, float]: 
     """
@@ -235,15 +236,15 @@ def init_camera_group() -> CameraGroup:
     ### https://ssd.jpl.nasa.gov/horizons/app.html#/ (tallene står i km, så må endres til m)
     ### Parametere til space_object (alle tall er oppgitt ut fra SI-enheter)
     ### sprite gruppe, navn, path til bilde, bildestørrelse, masse, x koordinat, y koordinat, x fartsvektor, y fartsvektor
-    Space_object(camera_group, "Sola", "sun.jpeg", 15, 1.98847e30, -1.283674643550172e9, 5.007104996950605e8, -5.809369653802155, -1.461959576560110e1)
-    Space_object(camera_group, "Merkur", "mercury.jpeg", 3, 0.30104e24, 5.242617205495467e10, -5.596063357617276e9, -3.931719860392732e3, 5.056613955108243e4) 
-    Space_object(camera_group, "Venus", "venus.jpeg", 5, 4.8673e24, -1.143612889654620e10, 1.076180391552140e11, -3.498958532524220e4, -3.509011592387367e3) 
-    Space_object(camera_group, "Jorda", "earth.jpeg", 6, 5.9722e24, -2.741147560901964e10, 1.452697499646169e11, -2.981801522121922e4, -5.415519940416356e3) 
-    Space_object(camera_group, "Mars", "mars.jpeg", 4, 0.64169e24, -1.309510737126251e11, -1.893127398896606e11, 2.090994471204196e4, -1.160503586188451e4) 
-    Space_object(camera_group, "Jupiter", "jupiter.jpeg", 13, 1898.13e24, 6.955554713494443e11, -2.679620040967891e11, 4.539612624165795e3, 1.280513202430234e4) 
-    Space_object(camera_group, "Saturn", "saturn.png", 20, 568.32e24, 1.039929082221698e12, -1.056650148100382e12, 6.345150014839902e3, 6.756117343710409e3) 
-    Space_object(camera_group, "Uranus", "uranus.jpeg", 12, 86.811e24, 2.152570437700128e12, 2.016888245555490e12, -4.705853565766252e3, 4.652144641704226e3) 
-    Space_object(camera_group, "Neptun", "neptune.jpeg", 12, 102.409e24, 4.431790029686977e12, -6.114486878028781e11, 7.066237951457524e2, 5.417076605926207e3)
+    Space_object(camera_group, "Sola", "./assets/sun.jpeg", 15, 1.98847e30, -1.283674643550172e9, 5.007104996950605e8, -5.809369653802155, -1.461959576560110e1)
+    Space_object(camera_group, "Merkur", "./assets/mercury.jpeg", 3, 0.30104e24, 5.242617205495467e10, -5.596063357617276e9, -3.931719860392732e3, 5.056613955108243e4) 
+    Space_object(camera_group, "Venus", "./assets/venus.jpeg", 5, 4.8673e24, -1.143612889654620e10, 1.076180391552140e11, -3.498958532524220e4, -3.509011592387367e3) 
+    Space_object(camera_group, "Jorda", "./assets/earth.jpeg", 6, 5.9722e24, -2.741147560901964e10, 1.452697499646169e11, -2.981801522121922e4, -5.415519940416356e3) 
+    Space_object(camera_group, "Mars", "./assets/mars.jpeg", 4, 0.64169e24, -1.309510737126251e11, -1.893127398896606e11, 2.090994471204196e4, -1.160503586188451e4) 
+    Space_object(camera_group, "Jupiter", "./assets/jupiter.jpeg", 13, 1898.13e24, 6.955554713494443e11, -2.679620040967891e11, 4.539612624165795e3, 1.280513202430234e4) 
+    Space_object(camera_group, "Saturn", "./assets/saturn.png", 20, 568.32e24, 1.039929082221698e12, -1.056650148100382e12, 6.345150014839902e3, 6.756117343710409e3) 
+    Space_object(camera_group, "Uranus", "./assets/uranus.jpeg", 12, 86.811e24, 2.152570437700128e12, 2.016888245555490e12, -4.705853565766252e3, 4.652144641704226e3) 
+    Space_object(camera_group, "Neptun", "./assets/neptune.jpeg", 12, 102.409e24, 4.431790029686977e12, -6.114486878028781e11, 7.066237951457524e2, 5.417076605926207e3)
     return camera_group  # returnerer kamera gruppe 
     
 def update_display(width: int, height: int) -> tuple[int, int]:
@@ -267,25 +268,25 @@ def welcome_screen() -> None:
     welcome_screen_group = pygame.sprite.Group() # sprite gruppe for alle elementer i welcome screen
     
     if storage.get() == None:  # hvis storage er tum
-        start_button = Button(welcome_screen_group, "snsbtn.png", (70*3.2125, 70), (0, -30), alignments=["centerx", "endy"]) # lager kanpp for å starte simulering 
-        continue_button = Button(welcome_screen_group, "gsbtn.png", (0, 0), (0, 0)) # lager knapp men skal ikke vises fordi man kan ikke gjenoppta en simulering da data ikke eksisterer
+        start_button = Button(welcome_screen_group, "./assets/snsbtn.png", (70*3.2125, 70), (0, -30), alignments=["centerx", "endy"]) # lager kanpp for å starte simulering 
+        continue_button = Button(welcome_screen_group, "./assets/gsbtn.png", (0, 0), (0, 0)) # lager knapp men skal ikke vises fordi man kan ikke gjenoppta en simulering da data ikke eksisterer
         welcome_screen_group.remove(continue_button) # fjerner fra sprite gruppe fordi knapp skal ikke vises
         continue_button.is_clickable = False # gjør at knappen ikke kan trykkes  
     else: # storage er ikke tum 
-        start_button = Button(welcome_screen_group, "snsbtn.png", (70*3.2125, 70), (150, -30), alignments=["centerx", "endy"]) # lager knapp for å starte simulering
-        continue_button = Button(welcome_screen_group, "gsbtn.png", (70*3.2125, 70), (-150, -30), alignments=["centerx", "endy"]) # lager knapp for å gjenoppta simulering
+        start_button = Button(welcome_screen_group, "./assets/snsbtn.png", (70*3.2125, 70), (150, -30), alignments=["centerx", "endy"]) # lager knapp for å starte simulering
+        continue_button = Button(welcome_screen_group, "./assets/gsbtn.png", (70*3.2125, 70), (-150, -30), alignments=["centerx", "endy"]) # lager knapp for å gjenoppta simulering
 
     Text(welcome_screen_group, "Simulering solsystemet", (0,30), alignments=["centerx"], font_size=40) # lager tekst som vises til skjermen
-    left_button = Button(welcome_screen_group, "arrow-left.png", (40,40), (15,0), alignments=["centery"]) # lager kanpp for å gå til forrige slide
-    right_button = Button(welcome_screen_group, "arrow-right.png", (40,40), (-15,0), alignments=["centery", "endx"]) # lager kanpp for å gå til neste slide
+    left_button = Button(welcome_screen_group, "./assets/arrow-left.png", (40,40), (15,0), alignments=["centery"]) # lager kanpp for å gå til forrige slide
+    right_button = Button(welcome_screen_group, "./assets/arrow-right.png", (40,40), (-15,0), alignments=["centery", "endx"]) # lager kanpp for å gå til neste slide
     welcome_screen_group.remove(left_button) # viser ikke left knapp i starten fordi det ikke går an å gå til venstre da slide er på index 0
     left_button.clickable = False # gjør at ikke left knapp registrerer klikk i starten 
     
     current_text = Text(welcome_screen_group, "Bruk wasd for å bevege på kameraet", (0,-50), alignments=["centerx", "centery"]) # tekst som vises
-    current_img = Image(welcome_screen_group, "wasd.png",(200,120), (0,50), alignments=["centerx", "centery"] ) # bilde som vises
+    current_img = Image(welcome_screen_group, "./assets/wasd.png",(200,120), (0,50), alignments=["centerx", "centery"] ) # bilde som vises
     
     current_slider_page = 0 # hvilken slide som skal vises
-    background_image = pygame.image.load("background.jpeg").convert_alpha() # laster inn bakgrunnsbilde som vises
+    background_image = pygame.image.load("./assets/background.jpeg").convert_alpha() # laster inn bakgrunnsbilde som vises
     background_image = pygame.transform.scale(background_image, pygame.display.get_surface().get_size()) # scaler til størrelsen av skjermen
 
     def slider_change(index: int, sprite_group: pygame.sprite.Group, text: Text, img: Image, right_button: Button, left_button: Button) -> tuple[Text, Image]: # funksjon som oppdater hvilken slide som vises til skjermen
@@ -294,34 +295,34 @@ def welcome_screen() -> None:
         alignments = ["centerx", "centery"] # posisjonsjusteringer for bilde og tekst 
         if index == 0: 
             text = Text(sprite_group, "Bruk wdsa for å bevege på kameraet", (0,-50), alignments=alignments) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img =  Image(sprite_group, "wasd.png",(220,120), (0,50), alignments=alignments ) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img =  Image(sprite_group, "./assets/wasd.png",(220,120), (0,50), alignments=alignments ) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 1: 
             text = Text(sprite_group, "Venstreklikk på en planet for å følge og se informasjon om planeten", (0,-50), alignments=alignments) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "mouse1.jpeg", (100,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/mouse1.jpeg", (100,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 2: 
             text = Text(sprite_group, "Bruk venstre og høyre tast for å zoome", (0,-50), alignments=alignments) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "leftrightkeys.png", (220,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/leftrightkeys.png", (220,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 3: 
             text = Text(sprite_group, "Bruk opp og ned tast for å øke/senke tidsendringen i simuleringen", (0,-50), alignments=alignments) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "updownkeys.png", (220,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/updownkeys.png", (220,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 4: 
             text = Text(sprite_group, "Trykk mellomrom for å pause simuleringen eller på pause knappen", (0,-50), alignments=["centerx", "centery"]) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "spacekey.png", (310,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/spacekey.png", (310,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 5: 
             text = Text(sprite_group, "Trykk på r tasten eller på replay knappen for å starte simuleringen på nytt", (0,-50), alignments=["centerx", "centery"]) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "rkey.png", (220,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/rkey.png", (220,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 6: 
             text = Text(sprite_group, "Trykk på h for å gjemme bort tall fra skjermen og bare vise simulering", (0,-50), alignments=["centerx", "centery"]) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "hkey.png", (220,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/hkey.png", (220,100), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 7: 
             text = Text(sprite_group, "Trykk på c eller på center camera knappen for å nullstille kameraet", (0,-50), alignments=["centerx", "centery"]) # lager ny text og legger til sprite i gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "ckey.png", (220,120), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/ckey.png", (220,120), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 8: 
             text = Text(sprite_group, "Trykk på i eller på hjem knappen for å gå til start siden", (0,-50), alignments=["centerx", "centery"]) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "ikey.png", (220,120), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/ikey.png", (220,120), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
         elif index == 9: 
             text = Text(sprite_group, "Trykk på k eller på kalender knappen for å gå til velg startdato for simulering siden", (0,-50), alignments=["centerx", "centery"]) # lager ny text og legger til i sprite gruppe slik at den vises på skjermen
-            img = Image(sprite_group, "kkey.png", (220,120), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
+            img = Image(sprite_group, "./assets/kkey.png", (220,120), (0,50), alignments=alignments) # lager nytt bilde og legger til i sprite gruppe slik at den vises på skjerm
             
         if index == 0: # fjerner left button siden slide index er 0 og da kan man ikke gå mer tilbake
             sprite_group.remove(left_button) # fjerner left_button fra sprite gruppe slik at den ikke vises mer
@@ -351,7 +352,7 @@ def welcome_screen() -> None:
             if event.type == pygame.VIDEORESIZE: # window blir resize-et
                 width, height = event.size # setter bredde og høyde til størrelsen på vindu når det blir resize-et
                 width, height = update_display(width, height) # oppdaterer størrelsen på skjermen 
-                background_image = pygame.image.load("background.jpeg").convert_alpha() # laster inn bakgrunnsbilde som vises på nytt
+                background_image = pygame.image.load("./assets/background.jpeg").convert_alpha() # laster inn bakgrunnsbilde som vises på nytt
                 background_image = pygame.transform.scale(background_image, (width, height))
                 for sprite in welcome_screen_group: # looper igjennom alle spriter i welcome_screen_group og initialiserer posisjonen slik at posisjonen blir rett med alignments og ny screen størrelse
                     sprite.init_pos()
@@ -396,22 +397,22 @@ def choose_date_screen(prev_screen: str, selected_date: datetime.date) -> None:
     Text(choose_date_screen_group, "Velg startdato for simulering", (0,-200), alignments=["centerx", "centery"]) # tekst som vises til skjermen
 
     year_text = Text(choose_date_screen_group, str(selected_date.year), (-100,0), alignments=["centery", "centerx"]) # tekst som viser hvilket år som er valgt
-    year_up_btn = Button(choose_date_screen_group, "up_btn.png", (20, 20), (-100,-30), alignments=["centerx", "centery"]) # knapp for å gå ett år opp
-    year_down_btn = Button(choose_date_screen_group, "down_btn.png", (20, 20), (-100,30), alignments=["centerx", "centery"]) # knapp for å gå ett år ned
+    year_up_btn = Button(choose_date_screen_group, "./assets/up_btn.png", (20, 20), (-100,-30), alignments=["centerx", "centery"]) # knapp for å gå ett år opp
+    year_down_btn = Button(choose_date_screen_group, "./assets/down_btn.png", (20, 20), (-100,30), alignments=["centerx", "centery"]) # knapp for å gå ett år ned
     Text(choose_date_screen_group, "år", (-100, -60), font_size=15, alignments=["centery", "centerx"]) # tekst hvor det står "år" 
     
     month_text = Text(choose_date_screen_group, str(selected_date.month), (0,0), alignments=["centery", "centerx"]) # tekst som viser hvilken måned som er valgt
-    month_up_btn = Button(choose_date_screen_group, "up_btn.png", (20, 20), (0,-30), alignments=["centerx", "centery"]) # knapp for å gå en måned opp
-    month_down_btn = Button(choose_date_screen_group, "down_btn.png", (20, 20), (0,30), alignments=["centerx", "centery"]) # knapp for å gå en måned ned
+    month_up_btn = Button(choose_date_screen_group, "./assets/up_btn.png", (20, 20), (0,-30), alignments=["centerx", "centery"]) # knapp for å gå en måned opp
+    month_down_btn = Button(choose_date_screen_group, "./assets/down_btn.png", (20, 20), (0,30), alignments=["centerx", "centery"]) # knapp for å gå en måned ned
     Text(choose_date_screen_group, "måned", (0, -60), font_size=15, alignments=["centery", "centerx"]) # tekst hvor det står "måned"
     
     day_text = Text(choose_date_screen_group, str(selected_date.day), (100,0), alignments=["centery", "centerx"]) # viser hvilken dag som er valgt 
-    day_up_btn = Button(choose_date_screen_group, "up_btn.png", (20, 20), (100,-30), alignments=["centerx", "centery"]) # knapp for å gå en dag opp
-    day_down_btn = Button(choose_date_screen_group, "down_btn.png", (20, 20), (100,30), alignments=["centerx", "centery"]) # knapp for å gå en dag ned
+    day_up_btn = Button(choose_date_screen_group, "./assets/up_btn.png", (20, 20), (100,-30), alignments=["centerx", "centery"]) # knapp for å gå en dag opp
+    day_down_btn = Button(choose_date_screen_group, "./assets/down_btn.png", (20, 20), (100,30), alignments=["centerx", "centery"]) # knapp for å gå en dag ned
     Text(choose_date_screen_group, "dag", (100, -60), font_size=15, alignments=["centery", "centerx"]) # tekst hvor det står "dag" 
     
-    initdate_btn = Button(choose_date_screen_group, "initdate_btn.png", (602*0.31, 121*0.31), (0,200), alignments=["centerx", "centery"]) # initialiser dato knapp 
-    go_back_btn = Button(choose_date_screen_group, "arrow-left.png", (25,25), (5,10)) # gå tilbake knapp 
+    initdate_btn = Button(choose_date_screen_group, "./assets/initdate_btn.png", (602*0.31, 121*0.31), (0,200), alignments=["centerx", "centery"]) # initialiser dato knapp 
+    go_back_btn = Button(choose_date_screen_group, "./assets/arrow-left.png", (25,25), (5,10)) # gå tilbake knapp 
 
     while run: # pygame screen loop for choose_date_screen
         CLOCK.tick(FPS) # oppdaterer klokka og gjør at max FPS ikke overstiges
@@ -511,11 +512,11 @@ def simulation_screen(camera_group: CameraGroup, simulation_time: int):
     
     ### knapper
     button_group = pygame.sprite.Group() # lager sprite gruppe for knapper 
-    play_pause_button = Button(button_group, "pause.png", (25,25), (-125,5), alignments=["endx"]) # kanpp for å pause simulering
-    replay_button = Button(button_group, "replay.png", (25,25), (-95,5), alignments=["endx"]) # knapp for å restarte simulering 
-    reset_camera_button = Button(button_group, "focus.png", (25,25), (-65, 5), alignments=["endx"]) # knapp for å nullstille kameraet
-    choose_date_button = Button(button_group, "date.png", (25, 25), (-35, 5), alignments=["endx"]) # knapp for å gå til choose_date_screen slik at bruker kan velge en ny dato 
-    home_button = Button(button_group, "home.png", (25,25), (-5,5), alignments=["endx"]) # knapp for å gå til start igjen (welcome_screen)
+    play_pause_button = Button(button_group, "./assets/pause.png", (25,25), (-125,5), alignments=["endx"]) # kanpp for å pause simulering
+    replay_button = Button(button_group, "./assets/replay.png", (25,25), (-95,5), alignments=["endx"]) # knapp for å restarte simulering 
+    reset_camera_button = Button(button_group, "./assets/focus.png", (25,25), (-65, 5), alignments=["endx"]) # knapp for å nullstille kameraet
+    choose_date_button = Button(button_group, "./assets/date.png", (25, 25), (-35, 5), alignments=["endx"]) # knapp for å gå til choose_date_screen slik at bruker kan velge en ny dato 
+    home_button = Button(button_group, "./assets/home.png", (25,25), (-5,5), alignments=["endx"]) # knapp for å gå til start igjen (welcome_screen)
     
     ### tekst med informasjon om simuleringen
     info_group = pygame.sprite.Group() # lager sprite gruppe for tekst med informasjon om simuleringen
