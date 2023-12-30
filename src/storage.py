@@ -11,12 +11,16 @@ class Storage:
         """ 
         henter cache data 
         """
-        with open(self.file_path) as f: # åpner fil 
-            json_str = f.read() # leser innnhold i fil
-            if json_str == "": # hvis innhold er tomt, returner ingenting
-                return None 
-            else: 
-                return json.loads(json_str) # hvis innhold, parse json string og convert til python dictionary og returner 
+        try: 
+            with open(self.file_path) as f: # åpner fil 
+                json_str = f.read() # leser innnhold i fil
+                if json_str == "": # hvis innhold er tomt, returner ingenting
+                    return None 
+                else: 
+                    return json.loads(json_str) # hvis innhold, parse json string og convert til python dictionary og returner 
+        
+        except FileNotFoundError: 
+            return None
             
     def update(self, space_objects, time, dt_per_s, zoom, camera_offset) -> None: 
         """
