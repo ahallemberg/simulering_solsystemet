@@ -9,5 +9,5 @@ dateutil
 ## Run 
 In a python 3 environment with the dependencies installed, run the following command:
 ```bash
-python3 game.py
+python3 simulering.py
 ```
